@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BrainTest • Challenge Your Brain. Unlock Your Genius.</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Outfit & Caveat (for hand-drawn doodle labels) -->
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                        handwritten: ['Caveat', 'cursive'],
+                    },
+                    colors: {
+                        deepSpace: '#050714',
+                        navyCard: '#0b1026',
+                        neonPurple: '#a855f7',
+                        neonPink: '#ec4899',
+                        neonCyan: '#00d2ff',
+                        neonCyanGlow: '#00d2ff88',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link rel="stylesheet" href="style.css">
+    
+</head>
+<body class="relative flex flex-col justify-between">
+
+    <!-- Particle Background Canvas -->
+    <canvas id="particleCanvas"></canvas>
+
+    <!-- Flowing Ambient Background Vector Shapes -->
+    <div class="wave-bg-left"></div>
+    <div class="wave-bg-right"></div>
+
+    <!-- HEADER NAVIGATION -->
+    <header class="w-full max-w-7xl mx-auto px-6 py-6 flex items-center justify-between z-30 relative">
+        <!-- Logo Left -->
+        <div class="flex items-center space-x-3 cursor-pointer" onclick="handleLogoClick()">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-purple-600 via-pink-500 to-cyan-400 flex items-center justify-center shadow-lg shadow-purple-500/30">
+                <i class="fa-solid fa-brain text-white text-xl"></i>
+            </div>
+            <span class="text-2xl font-black tracking-tight flex items-center">
+                <span class="text-white">Brain</span>
+                <span class="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-cyan-400 ml-0.5">Test</span>
+            </span>
+        </div>
+
+        <!-- Links & Player Badge Right -->
+        <div class="flex items-center space-x-4 text-sm font-medium text-slate-300">
+            <div id="headerPlayerBadge" class="hidden sm:flex items-center space-x-2 px-3 py-1.5 rounded-full bg-purple-900/40 border border-purple-500/30 text-purple-200 text-xs font-bold">
+                <i class="fa-solid fa-user-shield text-cyan-400"></i>
+                <span id="headerPlayerNameDisplay">Player</span>
+                <button onclick="changePlayerNamePrompt()" class="ml-1 text-slate-400 hover:text-white" title="Change Name"><i class="fa-solid fa-pen text-[10px]"></i></button>
+            </div>
+            <div class="hidden md:flex items-center space-x-3 text-slate-300">
+                <span>Think</span>
+                <span class="text-purple-400 font-bold">•</span>
+                <span>Learn</span>
+                <span class="text-cyan-400 font-bold">•</span>
+                <span>Grow</span>
+            </div>
+            <button onclick="toggleSettingsModal()" class="w-10 h-10 rounded-full bg-slate-900/60 border border-slate-700/80 hover:border-cyan-400 flex items-center justify-center text-slate-300 hover:text-white transition-all">
+                <i class="fa-solid fa-gear text-lg"></i>
+            </button>
+        </div>
+    </header>
+
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="w-full max-w-6xl mx-auto px-4 my-auto relative z-20 flex-grow flex items-center justify-center py-4">
+
+        <!-- ================= PLAYER NAME ENTRY SCREEN ================= -->
+        <section id="nameEntryPage" class="page-view page-visible w-full flex flex-col items-center text-center">
+            
+            <div class="relative flex items-center justify-center my-4 md:my-6 w-full max-w-md">
+                <div class="orbit-ring-1"></div>
+                <div class="orbit-ring-2"></div>
+                <div class="orbit-sphere sphere-1"></div>
+                <div class="orbit-sphere sphere-2"></div>
+                
+                <div class="brain-glow-container relative z-10 w-40 h-40 md:w-48 md:h-48 rounded-full bg-gradient-to-br from-purple-900/60 via-navyCard to-deepSpace/90 border border-purple-500/30 flex items-center justify-center backdrop-blur-md">
+                    <i class="fa-solid fa-brain text-6xl bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-400"></i>
+                </div>
+            </div>
+
+            <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-3">
+                Welcome to <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400">BrainTest!</span>
+            </h1>
+            <p class="text-slate-300 text-base md:text-lg mb-8 max-w-md font-medium">
+                Enter your name to begin your cognitive journey and unlock your inner genius.
+            </p>
+
+            <div class="w-full max-w-md bg-navyCard/90 border border-purple-500/30 rounded-3xl p-6 md:p-8 shadow-2xl backdrop-blur-md">
+                <label for="playerNameInput" class="block text-xs font-bold text-cyan-400 uppercase tracking-widest mb-2 text-left">Enter Your Name</label>
+                <div class="relative mb-6">
+                    <span class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-purple-400">
+                        <i class="fa-solid fa-user"></i>
+                    </span>
+                    <input type="text" id="playerNameInput" placeholder="e.g. Sai Kumar" class="w-full pl-12 pr-4 py-3.5 bg-deepSpace/90 border border-slate-700 rounded-2xl text-white font-semibold placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all text-base" maxlength="25">
+                </div>
+                <div id="nameErrorMsg" class="text-rose-400 text-xs mb-4 hidden font-semibold text-left"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Please enter a valid name to continue.</div>
+                <button onclick="handleNameSubmission()" class="start-btn-neon w-full py-4 rounded-2xl text-white font-black text-lg tracking-wider uppercase flex items-center justify-center space-x-3 cursor-pointer group">
+                    <span>START GAME</span>
+                    <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                </button>
+            </div>
+        </section>
+
+
+        <!-- ================= WELCOME HERO PAGE ================= -->
+        <section id="welcomePage" class="page-view page-hidden w-full flex flex-col items-center text-center">
+            
+            <!-- Left Doodle -->
+            <div class="hidden lg:flex absolute left-4 top-1/4 flex-col items-center text-left opacity-80 pointer-events-none">
+                <div class="text-cyan-400 text-3xl mb-1 animate-pulse">
+                    <i class="fa-regular fa-lightbulb"></i>
+                </div>
+                <div class="doodle-text text-center rotate-[-8deg]">
+                    Better<br>Thinking
+                </div>
+                <svg class="w-12 h-12 text-cyan-400/70 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 9l-7 7-7-7"></path>
+                </svg>
+            </div>
+
+            <!-- Right Doodle -->
+            <div class="hidden lg:flex absolute right-4 top-1/4 flex-col items-center text-right opacity-80 pointer-events-none">
+                <div class="text-pink-400 text-3xl mb-1 animate-pulse">
+                    <i class="fa-solid fa-bullseye"></i>
+                </div>
+                <div class="doodle-text text-center rotate-[8deg]">
+                    Bigger<br>Dreams
+                </div>
+                <svg class="w-12 h-12 text-pink-400/70 mt-1 transform rotate-45" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+                </svg>
+            </div>
+
+            <!-- Central 3D Orbit Brain Visual -->
+            <div class="relative flex items-center justify-center my-4 md:my-6 w-full max-w-md">
+                <div class="orbit-ring-1"></div>
+                <div class="orbit-ring-2"></div>
+                <div class="orbit-sphere sphere-1"></div>
+                <div class="orbit-sphere sphere-2"></div>
+                <div class="orbit-sphere sphere-3"></div>
+
+                <div class="brain-glow-container relative z-10 w-44 h-44 md:w-52 md:h-52 rounded-full bg-gradient-to-br from-purple-900/60 via-navyCard to-deepSpace/90 border border-purple-500/30 flex items-center justify-center backdrop-blur-md">
+                    <svg class="w-28 h-28 md:w-36 md:h-36" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="brainGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#00d2ff" />
+                                <stop offset="50%" stop-color="#a855f7" />
+                                <stop offset="100%" stop-color="#ec4899" />
+                            </linearGradient>
+                            <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                                <feGaussianBlur stdDeviation="3" result="blur" />
+                                <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                            </filter>
+                        </defs>
+                        <path d="M50 20 C35 20 22 28 22 42 C22 48 25 53 29 57 C25 61 22 67 24 74 C26 82 35 85 44 82 C47 81 49 78 50 75 C51 78 53 81 56 82 C65 85 74 82 76 74 C78 67 75 61 71 57 C75 53 78 48 78 42 C78 28 65 20 50 20 Z" fill="url(#brainGrad)" filter="url(#glow)" opacity="0.9" />
+                        <path d="M50 22 V75" stroke="#ffffff" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+                        <path d="M35 32 C40 36 42 42 36 48 C30 54 36 60 42 62" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.8"/>
+                        <path d="M65 32 C60 36 58 42 64 48 C70 54 64 60 58 62" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.8"/>
+                        <path d="M28 42 C36 44 38 38 46 36" stroke="#00d2ff" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M72 42 C64 44 62 38 54 36" stroke="#00d2ff" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Personalized Greeting -->
+            <div id="personalizedWelcomeBanner" class="mb-2 text-cyan-300 text-sm md:text-base font-bold bg-cyan-950/40 border border-cyan-500/30 px-5 py-1.5 rounded-full inline-flex items-center space-x-2">
+                <i class="fa-solid fa-sparkles text-amber-400"></i>
+                <span id="welcomeGreetingText">Welcome, Player!</span>
+            </div>
+
+            <!-- Main Title -->
+            <h1 class="text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tight mb-3">
+                <span class="text-white">Brain</span><span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400">Test</span>
+            </h1>
+
+            <p class="text-xl md:text-2xl font-bold tracking-wide text-white mb-2">
+                Challenge Your Brain. Unlock Your <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500">Genius.</span>
+            </p>
+            <p class="text-sm md:text-base text-slate-400 max-w-lg mx-auto mb-8 font-normal">
+                Think Fast. Answer Smart. Become a Master.
+            </p>
+
+            <!-- START GAME Button -->
+            <button onclick="showPage('stagePage')" class="start-btn-neon px-10 py-4 md:px-12 md:py-4.5 rounded-full text-white font-black text-lg md:text-xl tracking-wider uppercase flex items-center space-x-3 cursor-pointer group">
+                <i class="fa-solid fa-rocket text-xl text-cyan-200 group-hover:rotate-12 transition-transform"></i>
+                <span>START GAME</span>
+                <i class="fa-solid fa-arrow-right text-xl text-cyan-200 group-hover:translate-x-1 transition-transform"></i>
+            </button>
+
+            <!-- Bottom Stats Bar -->
+            <div class="flex items-center justify-center space-x-6 md:space-x-10 mt-14 pt-6 border-t border-slate-800/80 text-slate-300 text-sm md:text-base font-semibold">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-layer-group text-purple-400"></i>
+                    <span><strong class="text-white">10</strong> Stages</span>
+                </div>
+                <div class="h-4 w-px bg-slate-800"></div>
+                <div class="flex items-center space-x-2">
+                    <i class="fa-regular fa-circle-question text-cyan-400"></i>
+                    <span><strong class="text-white">470</strong> Questions</span>
+                </div>
+                <div class="h-4 w-px bg-slate-800"></div>
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-crown text-amber-400"></i>
+                    <span>One Ultimate Master</span>
+                </div>
+            </div>
+
+        </section>
+
+
+        <!-- ================= STAGE SELECTION PAGE ================= -->
+        <section id="stagePage" class="page-view page-hidden w-full py-2">
+            
+            <div class="flex items-center justify-between mb-8">
+                <div>
+                    <h2 id="stagePageTitle" class="text-3xl md:text-4xl font-extrabold text-white">Select a Stage</h2>
+                    <p class="text-slate-400 text-sm mt-1">Unlock your cognitive journey from Beginner to Ultimate Master.</p>
+                </div>
+                <button onclick="showPage('welcomePage')" class="px-4 py-2 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700 text-slate-300 hover:text-white transition-all text-sm font-semibold flex items-center space-x-2">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    <span>Back</span>
+                </button>
+            </div>
+
+            <div id="stagesGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                <!-- Injected dynamically -->
+            </div>
+        </section>
+
+    </main>
+
+
+    <!-- ================= PLAYABLE QUIZ MODAL ================= -->
+    <div id="quizModal" class="fixed inset-0 z-50 flex items-center justify-center bg-deepSpace/90 backdrop-blur-md hidden opacity-0 transition-opacity duration-300 px-4">
+        <div class="bg-navyCard border border-purple-500/40 rounded-3xl max-w-lg w-full p-6 md:p-8 shadow-2xl relative">
+            
+            <button onclick="closeQuizModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white text-xl">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <!-- Quiz Header -->
+            <div class="flex items-center space-x-3 mb-6">
+                <div class="w-10 h-10 rounded-xl bg-purple-500/20 border border-purple-400/30 flex items-center justify-center text-purple-300">
+                    <i class="fa-solid fa-brain"></i>
+                </div>
+                <div>
+                    <h3 id="quizTitle" class="text-xl font-bold text-white">Stage 1: Beginner</h3>
+                    <p id="quizSubtitle" class="text-xs text-cyan-400">Logic Basics & Memory Warmup</p>
+                </div>
+            </div>
+
+            <!-- Quiz Question Box -->
+            <div id="quizContent" class="bg-deepSpace/90 rounded-2xl p-6 border border-slate-800 mb-6 text-center min-h-[220px] flex flex-col items-center justify-center">
+                <!-- Content inserted dynamically -->
+            </div>
+
+            <!-- Footer info -->
+            <div class="flex items-center justify-between text-xs text-slate-400">
+                <span id="quizScore">Score: 0</span>
+                <span id="quizProgress">Question 1 / 30</span>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ================= FINAL COMPLETION CELEBRATION MODAL ================= -->
+    <div id="celebrationModal" class="fixed inset-0 z-50 flex items-center justify-center bg-deepSpace/95 backdrop-blur-xl hidden opacity-0 transition-opacity duration-500 px-4 overflow-y-auto py-10">
+        <div class="bg-gradient-to-b from-navyCard via-deepSpace to-navyCard border-2 border-amber-400/60 rounded-3xl max-w-2xl w-full p-6 md:p-10 shadow-[0_0_80px_rgba(251,191,36,0.35)] relative text-center">
+            
+            <div class="absolute -top-12 left-1/2 transform -translate-x-1/2 w-24 h-24 rounded-full bg-gradient-to-br from-amber-400 via-yellow-500 to-amber-600 border-4 border-amber-200 flex items-center justify-center shadow-[0_0_30px_rgba(251,191,36,0.8)] animate-bounce">
+                <i class="fa-solid fa-crown text-5xl text-deepSpace"></i>
+            </div>
+
+            <div class="mt-8 mb-6">
+                <h2 id="celebrationTitle" class="text-2xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-yellow-200 to-amber-400 mb-2">
+                    CONGRATULATIONS, SAI KUMAR!
+                </h2>
+                <p class="text-lg md:text-xl font-bold text-cyan-300">
+                    You Have Successfully Completed All 10 Stages!
+                </p>
+                <p class="text-sm text-purple-300 font-medium mt-1">
+                    You Are Now an ULTIMATE BRAIN MASTER!
+                </p>
+            </div>
+
+            <div class="bg-slate-900/90 border border-amber-500/30 rounded-2xl p-5 mb-6 text-center shadow-inner">
+                <div class="text-xs text-slate-400 uppercase tracking-widest mb-1">Stage 10 Ultimate Score</div>
+                <div id="celebrationScoreDisplay" class="text-4xl font-extrabold text-amber-400 font-mono">50 / 50 (100%)</div>
+                <div id="celebrationPersonalNote" class="text-xs text-cyan-200 font-semibold mt-3 italic">
+                    "Congratulations, Sai Kumar! Keep Learning, Keep Thinking, Keep Growing!"
+                </div>
+            </div>
+
+            <div class="bg-purple-950/30 border border-purple-500/20 rounded-2xl p-4 mb-8 text-xs text-slate-300 leading-relaxed">
+                <p class="font-bold text-amber-300 mb-1">With Best Wishes,</p>
+                <p class="text-slate-400 font-medium">Your Brain Test Team ❤️</p>
+            </div>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <button onclick="restartFullGame()" class="start-btn-neon w-full sm:w-auto px-8 py-3.5 rounded-full text-white font-bold text-sm uppercase flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-rotate-right"></i>
+                    <span>Play Again</span>
+                </button>
+                <button onclick="shareAchievement()" class="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold text-sm uppercase rounded-full shadow-lg shadow-purple-600/30 transition-all flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-share-nodes"></i>
+                    <span>Share My Achievement</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ================= SETTINGS MODAL ================= -->
+    <div id="settingsModal" class="fixed inset-0 z-50 flex items-center justify-center bg-deepSpace/80 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300 px-4">
+        <div class="bg-navyCard border border-slate-700 rounded-2xl max-w-sm w-full p-6 shadow-2xl relative">
+            <button onclick="toggleSettingsModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <h3 class="text-xl font-bold text-white mb-4">Settings</h3>
+            <div class="space-y-4">
+                <div class="flex items-center justify-between py-2 border-b border-slate-800">
+                    <span class="text-sm font-medium text-slate-200">Sound Effects</span>
+                    <button id="soundToggleBtn" onclick="toggleSound()" class="px-3 py-1.5 rounded-lg bg-cyan-500/20 text-cyan-300 border border-cyan-400/30 text-xs font-bold">
+                        ENABLED
+                    </button>
+                </div>
+                <div class="flex items-center justify-between py-2 border-b border-slate-800">
+                    <span class="text-sm font-medium text-slate-200">Player Profile</span>
+                    <button onclick="changePlayerNamePrompt()" class="px-3 py-1.5 rounded-lg bg-purple-500/20 text-purple-300 border border-purple-400/30 text-xs font-bold">
+                        Change Name
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- FOOTER -->
+    <footer class="w-full text-center py-4 text-xs text-slate-500 z-30 relative">
+        <p>BrainTest Web Application • Challenge Your Brain</p>
+    </footer>
+
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // Player Profile & Persistent State Management
+        function getPlayerState() {
+            try {
+                const savedName = localStorage.getItem('brainTestPlayerName');
+                const savedProgress = localStorage.getItem('brainTestProgress');
+                const progress = savedProgress ? JSON.parse(savedProgress) : { unlockedStage: 1, stars: {} };
+                return { name: savedName || "", progress };
+            } catch(e) {
+                return { name: "", progress: { unlockedStage: 1, stars: {} } };
+            }
+        }
+
+        function savePlayerName(name) {
+            try {
+                localStorage.setItem('brainTestPlayerName', name.trim());
+            } catch(e) {}
+        }
+
+        function updatePlayerUI() {
+            const state = getPlayerState();
+            const badge = document.getElementById('headerPlayerBadge');
+            const nameDisplay = document.getElementById('headerPlayerNameDisplay');
+            const greeting = document.getElementById('welcomeGreetingText');
+
+            if (state.name) {
+                if (badge) badge.classList.remove('hidden');
+                if (nameDisplay) nameDisplay.innerText = state.name;
+                if (greeting) greeting.innerText = `Welcome, ${state.name}!`;
+            } else {
+                if (badge) badge.classList.add('hidden');
+            }
+        }
+
+        function handleNameSubmission() {
+            playClickSound();
+            const input = document.getElementById('playerNameInput');
+            const errorMsg = document.getElementById('nameErrorMsg');
+            const nameVal = input ? input.value.trim() : "";
+
+            if (!nameVal) {
+                if (errorMsg) errorMsg.classList.remove('hidden');
+                input.focus();
+                return;
+            }
+
+            if (errorMsg) errorMsg.classList.add('hidden');
+            savePlayerName(nameVal);
+            updatePlayerUI();
+            showPage('welcomePage');
+        }
+
+        function changePlayerNamePrompt() {
+            toggleSettingsModal();
+            const current = getPlayerState().name;
+            const newName = prompt("Enter your new player name:", current);
+            if (newName && newName.trim()) {
+                savePlayerName(newName.trim());
+                updatePlayerUI();
+            }
+        }
+
+        function handleLogoClick() {
+            const state = getPlayerState();
+            if (state.name) {
+                showPage('welcomePage');
+            } else {
+                showPage('nameEntryPage');
+            }
+        }
+
+        // Global Navigation Function
+        function showPage(pageId) {
+            playClickSound();
+            const pages = ['nameEntryPage', 'welcomePage', 'stagePage'];
+            pages.forEach(p => {
+                const el = document.getElementById(p);
+                if (el) {
+                    if (p === pageId) {
+                        el.classList.remove('page-hidden');
+                        el.classList.add('page-visible');
+                    } else {
+                        el.classList.add('page-hidden');
+                        el.classList.remove('page-visible');
+                    }
+                }
+            });
+
+            if (pageId === 'stagePage') {
+                renderStagesGrid();
+            }
+        }
+
+        // Web Audio API Sound Effects
+        let soundEnabled = true;
+        let audioCtx = null;
+
+        function getAudioContext() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
+        function playClickSound() {
+            if (!soundEnabled) return;
+            try {
+                const ctx = getAudioContext();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(600, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(800, ctx.currentTime + 0.08);
+                gain.gain.setValueAtTime(0.15, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.08);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.08);
+            } catch(e) {}
+        }
+
+        function playSuccessSound() {
+            if (!soundEnabled) return;
+            try {
+                const ctx = getAudioContext();
+                const now = ctx.currentTime;
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(523.25, now);
+                osc.frequency.setValueAtTime(659.25, now + 0.1);
+                osc.frequency.setValueAtTime(783.99, now + 0.2);
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.35);
+            } catch(e) {}
+        }
+
+        function playVictoryFanfare() {
+            if (!soundEnabled) return;
+            try {
+                const ctx = getAudioContext();
+                const now = ctx.currentTime;
+                [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(freq, now + idx * 0.15);
+                    gain.gain.setValueAtTime(0.25, now + idx * 0.15);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + idx * 0.15 + 0.4);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now + idx * 0.15);
+                    osc.stop(now + idx * 0.15 + 0.4);
+                });
+            } catch(e) {}
+        }
+
+        function playErrorSound() {
+            if (!soundEnabled) return;
+            try {
+                const ctx = getAudioContext();
+                const now = ctx.currentTime;
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(220, now);
+                osc.frequency.setValueAtTime(164.81, now + 0.1);
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.3);
+            } catch(e) {}
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const btn = document.getElementById('s<script src="script.js" defer></script>

@@ -1,0 +1,222 @@
+* {
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            background-color: #050714;
+            color: #ffffff;
+            font-family: 'Outfit', sans-serif;
+            overflow-x: hidden;
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        /* Ambient Glowing Vector Wave Backgrounds */
+        .wave-bg-left {
+            position: absolute;
+            bottom: -5%;
+            left: -10%;
+            width: 55vw;
+            height: 55vw;
+            max-width: 650px;
+            max-height: 650px;
+            background: radial-gradient(circle at 30% 70%, rgba(120, 40, 200, 0.55) 0%, rgba(60, 20, 130, 0.3) 45%, transparent 75%);
+            filter: blur(50px);
+            border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+            pointer-events: none;
+            z-index: 1;
+            animation: waveFloatLeft 12s infinite alternate ease-in-out;
+        }
+
+        .wave-bg-right {
+            position: absolute;
+            bottom: -5%;
+            right: -10%;
+            width: 55vw;
+            height: 55vw;
+            max-width: 650px;
+            max-height: 650px;
+            background: radial-gradient(circle at 70% 70%, rgba(0, 110, 255, 0.5) 0%, rgba(130, 30, 210, 0.35) 50%, transparent 75%);
+            filter: blur(50px);
+            border-radius: 60% 40% 30% 70% / 50% 30% 70% 50%;
+            pointer-events: none;
+            z-index: 1;
+            animation: waveFloatRight 14s infinite alternate ease-in-out;
+        }
+
+        @keyframes waveFloatLeft {
+            0% { transform: translate(0, 0) rotate(0deg) scale(1); }
+            100% { transform: translate(30px, -20px) rotate(8deg) scale(1.08); }
+        }
+
+        @keyframes waveFloatRight {
+            0% { transform: translate(0, 0) rotate(0deg) scale(1); }
+            100% { transform: translate(-30px, -25px) rotate(-8deg) scale(1.06); }
+        }
+
+        /* Floating background particle canvas */
+        #particleCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        /* 3D Brain Orbit Animation */
+        .orbit-ring-1 {
+            position: absolute;
+            width: 320px;
+            height: 130px;
+            border: 2px solid rgba(168, 85, 247, 0.55);
+            border-radius: 50%;
+            transform: rotate(-25deg);
+            box-shadow: 0 0 15px rgba(168, 85, 247, 0.3);
+            pointer-events: none;
+            animation: ringPulse 4s infinite alternate ease-in-out;
+        }
+
+        .orbit-ring-2 {
+            position: absolute;
+            width: 310px;
+            height: 120px;
+            border: 2px solid rgba(0, 210, 255, 0.55);
+            border-radius: 50%;
+            transform: rotate(20deg);
+            box-shadow: 0 0 15px rgba(0, 210, 255, 0.3);
+            pointer-events: none;
+            animation: ringPulse 4s infinite alternate-reverse ease-in-out;
+        }
+
+        @keyframes ringPulse {
+            0% { opacity: 0.6; filter: drop-shadow(0 0 5px rgba(0,210,255,0.4)); }
+            100% { opacity: 1; filter: drop-shadow(0 0 18px rgba(168,85,247,0.8)); }
+        }
+
+        /* Orbiting Spheres */
+        .orbit-sphere {
+            position: absolute;
+            border-radius: 50%;
+            box-shadow: 0 0 12px currentColor;
+        }
+
+        .sphere-1 {
+            width: 16px;
+            height: 16px;
+            background: #00d2ff;
+            color: #00d2ff;
+            top: 15%;
+            left: 18%;
+            animation: orbitAnim1 8s infinite linear;
+        }
+
+        .sphere-2 {
+            width: 14px;
+            height: 14px;
+            background: #a855f7;
+            color: #a855f7;
+            bottom: 20%;
+            right: 15%;
+            animation: orbitAnim2 9s infinite linear;
+        }
+
+        .sphere-3 {
+            width: 12px;
+            height: 12px;
+            background: #ec4899;
+            color: #ec4899;
+            top: 10%;
+            right: 25%;
+            animation: orbitAnim1 11s infinite reverse linear;
+        }
+
+        @keyframes orbitAnim1 {
+            0% { transform: translate(0, 0) scale(0.9); }
+            50% { transform: translate(25px, -15px) scale(1.2); }
+            100% { transform: translate(0, 0) scale(0.9); }
+        }
+
+        @keyframes orbitAnim2 {
+            0% { transform: translate(0, 0) scale(1.1); }
+            50% { transform: translate(-20px, 15px) scale(0.85); }
+            100% { transform: translate(0, 0) scale(1.1); }
+        }
+
+        /* Neon Glow Brain Pulse */
+        .brain-glow-container {
+            filter: drop-shadow(0 0 35px rgba(168, 85, 247, 0.75)) drop-shadow(0 0 70px rgba(0, 210, 255, 0.45));
+            animation: floatBrain 4.5s infinite ease-in-out;
+        }
+
+        @keyframes floatBrain {
+            0%, 100% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-12px) scale(1.03); }
+        }
+
+        /* START GAME Pill Neon Button */
+        .start-btn-neon {
+            background: linear-gradient(90deg, #00c6ff 0%, #0072ff 100%);
+            box-shadow: 0 0 25px rgba(0, 210, 255, 0.75), 0 0 50px rgba(0, 114, 255, 0.35), inset 0 0 10px rgba(255, 255, 255, 0.5);
+            border: 2px solid #80e5ff;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .start-btn-neon:hover {
+            transform: translateY(-3px) scale(1.04);
+            box-shadow: 0 0 40px rgba(0, 210, 255, 0.95), 0 0 80px rgba(0, 114, 255, 0.5), inset 0 0 15px rgba(255, 255, 255, 0.8);
+            background: linear-gradient(90deg, #33d6ff 0%, #1a82ff 100%);
+        }
+
+        .start-btn-neon:active {
+            transform: translateY(1px) scale(0.98);
+        }
+
+        /* Glassmorphic Stage Cards */
+        .glass-card {
+            background: rgba(11, 16, 38, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(168, 85, 247, 0.22);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(0, 210, 255, 0.6);
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px -8px rgba(0, 210, 255, 0.3);
+        }
+
+        /* Page Smooth Fade Transitions */
+        .page-view {
+            transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
+        }
+
+        .page-hidden {
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(0.96);
+            position: absolute;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+
+        .page-visible {
+            opacity: 1;
+            pointer-events: auto;
+            transform: scale(1);
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Custom Hand-Drawn Doodles Styling */
+        .doodle-text {
+            font-family: 'Caveat', cursive;
+            color: #7dd3fc;
+            font-size: 1.4rem;
+            line-height: 1.1;
+        }
